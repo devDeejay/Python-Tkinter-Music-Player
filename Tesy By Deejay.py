@@ -15,75 +15,98 @@ root.config(menu=menu)
 # ---------Various Functions-------------
 root.filename=""
 root.playlist = []
-root.pauseFlag=False
+root.pauseFlag = False
+root.songAdded = False
 root.i = 0
 
 def newFile():
      winsound.Beep(2000,1000) #('frequency','duration')
 def openFile():
     try:
+        root.songAdded = True
         root.filename = filedialog.askopenfilename(initialdir = "/",title = "Select your cool music track",filetypes = (("mp3 Music Files","*.mp3"),("m4a Music Files","*.m4a")))
         root.playlist.append(root.filename)
         print(" Added " + root.filename)
         root.screenMessage.set("Good! Now Press on the Play Button")
     except:
         print("Cannot load the music")
-def save():
-    print("Saved")
-def saveAs():
-    print("Saved As")
-def cut():
-    print("Cuts the text")
+def savePlaylist():
+    print("save Playlist not defined yet")
+
 def playMusic():
-    try:
-        if(root.pauseFlag == True):
-            pygame.mixer.music.unpause()
-        else:
-            print("Playing")
-            pygame.mixer.init()
-            pygame.mixer.music.load(root.playlist[root.i])
-            pygame.mixer.music.play()
-            root.screenMessage.set("Playing " + root.playlist[root.i])
-    except:
-        print("Could not play the music")
+    if(root.songAdded == False):
+        root.screenMessage.set("First add some Music man!")
+    else:
+        try:
+            if(root.pauseFlag == True):
+                pygame.mixer.music.unpause()
+            else:
+                print("Playing")
+                pygame.mixer.init()
+                pygame.mixer.music.load(root.playlist[root.i])
+                pygame.mixer.music.play()
+                root.screenMessage.set("Playing " + root.playlist[root.i])
+        except:
+            print("Could not play the music")
 
 def pauseMusic():
-    pygame.mixer.music.pause()
-    root.pauseFlag = True
-    root.screenMessage.set("Paused")
+    if(root.songAdded == False):
+        root.screenMessage.set("First add some Music man!")
+    else:
+        try:
+            pygame.mixer.music.pause()
+            root.pauseFlag = True
+            root.screenMessage.set("Paused")
+        except:
+            print("Cannot Pause the Music")
 
 def stopMusic():
-    pygame.mixer.music.fadeout(600)
-    root.screenMessage.set("End of Playback!")
+    if(root.songAdded == False):
+        root.screenMessage.set("First add some Music man!")
+    else:
+        pygame.mixer.music.fadeout(600)
+        root.screenMessage.set("End of Playback!")
 
 def prevMusic():
-    try:
-        if(root.playlist[root.i - 1]):
-            root.i -= 1
-            playMusic()
-        else:
+    if(root.songAdded == False):
+        root.screenMessage.set("First add some Music man!")
+    else:
+        try:
+            if(root.playlist[root.i - 1]):
+                root.i -= 1
+                playMusic()
+            else:
+                print("No previous songs")
+                root.screenMessage.set("No previous songs")
+        except:
+            stopMusic()
             print("No previous songs")
-            root.screenMessage.set("No previous songs")
-    except:
-        stopMusic()
-        print("No previous songs")
 
 def nextMusic():
-    try:
+    if(root.songAdded == False):
+        root.screenMessage.set("First add some Music man!")
+    else:
+        try:
 
-        if(root.playlist[root.i]):
-            root.i += 1
-            playMusic()
-        else:
-            root.i -= 1
-    except:
-        root.screenMessage.set("End of Playback, Please add more songs")
+            if(root.playlist[root.i]):
+                root.i += 1
+                playMusic()
+            else:
+                root.i -= 1
+        except:
+            root.screenMessage.set("End of Playback, Please add more songs")
 def end():
     exit()
+
 def help():
     webbrowser.open("https://telegram.me/trivedi")
+
 def contact():
     webbrowser.open("https://telegram.me/trivedi")
+    webbrowser.open("https://telegram.me/kushagra2569")
+
+def contribute():
+    webbrowser.open("https://github.com/DhananjayTrivedi/TesyPlayer")
 
 #---------Creating Menus----------
 subMenu = Menu(menu)
@@ -91,30 +114,22 @@ menu.add_cascade(label="Media", menu=subMenu)#Cascading Options on the ToolBar S
 subMenu.add_command(label="New File", command=newFile)
 subMenu.add_command(label="Open File", command=openFile)
 subMenu.add_separator()
-subMenu.add_command(label="Save PlayList", command=save)
-subMenu.add_command(label="SaveAs", command=saveAs)
+subMenu.add_command(label="Save PlayList", command=savePlaylist)
 subMenu.add_separator()
 subMenu.add_command(label="exit", command=exit)
-
-editMenu = Menu(menu)
-menu.add_cascade(label="Edit",menu=editMenu)
-editMenu.add_command(label="Cut",command=cut)
-editMenu.add_command(label="Copy",command=cut)
-editMenu.add_command(label="Paste",command=cut)
 
 contactMenu = Menu(menu)
 menu.add_cascade(label="Contact",menu=contactMenu)
 contactMenu.add_command(label="Help",command=help)
 contactMenu.add_command(label="Report Error",command=contact)
-contactMenu.add_command(label="Contribute",command=cut)
-
+contactMenu.add_command(label="Contribute",command=contribute)
 
 #---------Creating Tri-color Labels----------
 one = Label(root, text="Welcome", bg="orange",fg="white")
 one.pack(fill=X)
-two = Label(root, text="To Our First Music Player", bg="white",fg="blue")
+two = Label(root, text="To Deejay Music Player", bg="white",fg="blue")
 two.pack(fill=X)
-three = Label(root, text="Created By DevX", bg="green",fg="white")
+three = Label(root, text="Created By Dhananjay and Kushagra", bg="green",fg="white")
 three.pack(fill=X)
 
 topFrame = Frame(root)#definig a frame that will contain the Widgets
@@ -138,6 +153,6 @@ button4.pack(side=LEFT,padx=5,pady=20)
 #-----------The status Bar--------------
 root.screenMessage = StringVar()
 label = Message( root, textvariable=root.screenMessage, relief=RAISED )
-root.screenMessage.set("Welcome, to Tesy Music Player")
+root.screenMessage.set("Welcome, to Deejay Music Player")
 label.pack(side=BOTTOM,fill=X)
 root.mainloop()#refreshing the window so that it stays on the screen
