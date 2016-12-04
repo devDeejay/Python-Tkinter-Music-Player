@@ -13,21 +13,21 @@ menu = Menu(frame1)
 root.config(menu=menu)
 
 # ---------Various Functions-------------
-
-
 root.filename=""
 root.playlist = []
 root.pauseFlag=False
-i = 0
+root.i = 0
 
 def newFile():
      winsound.Beep(2000,1000) #('frequency','duration')
 def openFile():
-    root.filename = filedialog.askopenfilename(initialdir = "/",title = "Select your cool music track",filetypes = (("mp3 Music Files","*.mp3"),("m4a Music Files","*.m4a")))
-    root.playlist.append(root.filename)
-    print(" Added " + root.filename)
-    print(root.playlist)
-    root.screenMessage.set("Good! Now Press on the Play Button")
+    try:
+        root.filename = filedialog.askopenfilename(initialdir = "/",title = "Select your cool music track",filetypes = (("mp3 Music Files","*.mp3"),("m4a Music Files","*.m4a")))
+        root.playlist.append(root.filename)
+        print(" Added " + root.filename)
+        root.screenMessage.set("Good! Now Press on the Play Button")
+    except:
+        print("Cannot load the music")
 def save():
     print("Saved")
 def saveAs():
@@ -41,11 +41,11 @@ def playMusic():
         else:
             print("Playing")
             pygame.mixer.init()
-            pygame.mixer.music.load(root.playlist[i])
+            pygame.mixer.music.load(root.playlist[root.i])
             pygame.mixer.music.play()
-            root.screenMessage.set("Playing " + root.playlist[i])
+            root.screenMessage.set("Playing " + root.playlist[root.i])
     except:
-        print("Couldnot play the music")
+        print("Could not play the music")
 
 def pauseMusic():
     pygame.mixer.music.pause()
@@ -58,20 +58,26 @@ def stopMusic():
 
 def prevMusic():
     try:
-        if(root.playlist[i-1]):
-            pygame.mixer.music.load(root.playlist[i-1])
-            pygame.mixer.music.play()
+        if(root.playlist[root.i - 1]):
+            root.i -= 1
+            playMusic()
+        else:
+            print("No previous songs")
+            root.screenMessage.set("No previous songs")
     except:
+        stopMusic()
         print("No previous songs")
 
 def nextMusic():
     try:
-        if(root.playlist[i+1]):
-            pygame.mixer.music.load(root.playlist[i+1])
 
+        if(root.playlist[root.i]):
+            root.i += 1
+            playMusic()
+        else:
+            root.i -= 1
     except:
-        print("End of PlayList, Please add more songs")
-
+        root.screenMessage.set("End of Playback, Please add more songs")
 def end():
     exit()
 def help():
@@ -134,6 +140,4 @@ root.screenMessage = StringVar()
 label = Message( root, textvariable=root.screenMessage, relief=RAISED )
 root.screenMessage.set("Welcome, to Tesy Music Player")
 label.pack(side=BOTTOM,fill=X)
-
-
 root.mainloop()#refreshing the window so that it stays on the screen
