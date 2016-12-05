@@ -20,8 +20,7 @@ root.pauseFlag = False
 root.songAdded = False
 root.i = 0
 
-def newFile():
-     winsound.Beep(2000,1000) #('frequency','duration')
+
 def openFile():
     try:
         root.songAdded = True
@@ -139,7 +138,6 @@ def contribute():
 #---------Creating Menus----------
 subMenu = Menu(menu)
 menu.add_cascade(label="Media", menu=subMenu)#Cascading Options on the ToolBar Such as: File Edit
-subMenu.add_command(label="New File", command=newFile)
 subMenu.add_command(label="Open File", command=openFile)
 subMenu.add_separator()
 subMenu.add_command(label="Open PlayList", command=openPlayList)
