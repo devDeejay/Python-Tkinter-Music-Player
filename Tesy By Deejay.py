@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter import Tk
 from tkinter import filedialog
 import winsound
+import pickle
 import pygame
 
 #---------Making the Window and Frames----------
@@ -30,8 +31,35 @@ def openFile():
         root.screenMessage.set("Good! Now Press on the Play Button")
     except:
         print("Cannot load the music")
+
 def savePlaylist():
-    print("save Playlist not defined yet")
+    '''
+    #Attempt 1: But this makes a temporary .txt file, We want something more complex
+    thefile = open('playlist.txt', 'w')
+
+    for song in root.playlist:
+        thefile.write("%s\n" % song)
+
+    thefile.close()
+    '''
+
+    #Attempt 2
+    #using import pickle
+    #using Tkinter too
+
+    root.playListFileO = filedialog.asksaveasfilename(title="Give a name to your playlist",filetypes=(("Python File",".py"),("Text File",".txt")),initialdir = "/")
+    output = open(root.playListFileO,'wb')
+    pickle.dump(root.playlist,output,-1)
+
+    output.close()
+
+def openPlayList():
+    #using pickle
+    root.playListFileI = filedialog.askopenfilename(initialdir = "/",title = "Select your cool music track",filetypes=(("Python File",".py"),("Text File",".txt")))
+    input = open(root.playListFileI,'rb')
+    root.playlist = pickle.load(input)
+
+    input.close()
 
 def playMusic():
     if(root.songAdded == False):
@@ -114,6 +142,7 @@ menu.add_cascade(label="Media", menu=subMenu)#Cascading Options on the ToolBar S
 subMenu.add_command(label="New File", command=newFile)
 subMenu.add_command(label="Open File", command=openFile)
 subMenu.add_separator()
+subMenu.add_command(label="Open PlayList", command=openPlayList)
 subMenu.add_command(label="Save PlayList", command=savePlaylist)
 subMenu.add_separator()
 subMenu.add_command(label="exit", command=exit)
